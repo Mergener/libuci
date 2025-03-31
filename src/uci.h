@@ -37,7 +37,7 @@
 #include <type_traits>
 #include <variant>
 
-namespace uci {
+namespace libuci {
 
 //
 // Forward Declarations
@@ -284,7 +284,7 @@ struct PositionArgs {
      * The position FEN.
      * If the user specifies startpos, this will be the startpos FEN.
      */
-    std::string_view fen;
+    std::string fen;
     std::vector<std::string> moves;
 };
 
@@ -607,6 +607,6 @@ std::ostream& operator<<(std::ostream& stream, const CurrMove<TMove>& info) {
 
 }
 
-} // uci
+} // libuci
 
 #endif // UCI_H

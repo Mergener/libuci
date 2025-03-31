@@ -1,18 +1,18 @@
 //
 // MIT License
-// 
+//
 // Copyright (c) 2025 Thomas Mergener
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@
 #include <condition_variable>
 #include <chrono>
 
-namespace uci {
+namespace libuci {
 
 //
 // Forward declarations
@@ -301,7 +301,8 @@ void register_position(const std::function<void(const PositionArgs&)>& handler) 
             while (!reader.finished()) {
                 reader.skip_whitespace();
                 std::string_view remainder = reader.peek_remainder();
-                if (remainder.substr(0, 5) == "moves") {
+                if (   remainder.size() >= 5
+                    && remainder.substr(0, 5) == "moves") {
                     break;
                 }
                 fen_stream << reader.read_word() << ' ';
@@ -704,6 +705,9 @@ std::optional<double> ArgReader::try_read_float() {
 }
 
 std::string_view ArgReader::read_until(const std::function<bool(char)>& pred) {
+    if (finished()) {
+        return "";
+    }
     size_t start_pos = m_pos;
     while (m_pos < m_arg_str.size() && !pred(m_arg_str[m_pos])) {
         ++m_pos;
@@ -712,6 +716,10 @@ std::string_view ArgReader::read_until(const std::function<bool(char)>& pred) {
 }
 
 std::string_view ArgReader::read_while(const std::function<bool(char)>& pred) {
+    if (finished()) {
+        return "";
+    }
+
     size_t start_pos = m_pos;
     while (m_pos < m_arg_str.size() && pred(m_arg_str[m_pos])) {
         ++m_pos;
@@ -764,4 +772,4 @@ void main_loop() {
     }
 }
 
-} // uci
+} // libuci
